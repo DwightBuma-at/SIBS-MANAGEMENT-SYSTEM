@@ -47,6 +47,12 @@
       box-shadow: 0 0 0 4px rgba(15, 117, 188, 0.12);
     }
 
+    .hero-image {
+      image-rendering: auto;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+
     @media (max-height: 720px) {
       .short-screen-hide {
         display: none;
@@ -59,7 +65,6 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="responsive-final.css" />
 </head>
 <body class="h-screen bg-slate-100 text-sibs-ink">
   <main class="flex h-screen items-center justify-center overflow-hidden p-3 sm:p-5 lg:p-6">
@@ -86,26 +91,26 @@
           </div>
 
           <div class="relative z-20 mt-5 grid grid-cols-3 gap-2 sm:mt-6">
-            <div class="rounded-2xl border border-white/20 bg-white/12 p-3 backdrop-blur">
+            <div class="rounded-2xl border border-white/20 bg-white/12 p-3">
               <p class="text-xl font-bold sm:text-2xl">24/7</p>
               <p class="mt-1 text-xs leading-5 text-blue-50 sm:text-sm">Multi-location support</p>
             </div>
-            <div class="rounded-2xl border border-white/20 bg-white/12 p-3 backdrop-blur">
+            <div class="rounded-2xl border border-white/20 bg-white/12 p-3">
               <p class="text-xl font-bold sm:text-2xl">Omni</p>
               <p class="mt-1 text-xs leading-5 text-blue-50 sm:text-sm">Phone, email, chat, social</p>
             </div>
-            <div class="rounded-2xl border border-white/20 bg-white/12 p-3 backdrop-blur">
+            <div class="rounded-2xl border border-white/20 bg-white/12 p-3">
               <p class="text-xl font-bold sm:text-2xl">Global</p>
               <p class="mt-1 text-xs leading-5 text-blue-50 sm:text-sm">Multilingual service</p>
             </div>
           </div>
 
           <div class="relative mt-auto hidden min-h-0 flex-1 items-end justify-center sm:flex">
-            <div class="absolute bottom-3 h-[48%] w-[78%] rounded-[2rem] bg-white/10 blur-2xl"></div>
+            <div class="absolute bottom-3 h-[48%] w-[78%] rounded-[2rem] bg-white/10"></div>
             <img
               src="https://sibscontactcenter.com/hs-fs/hubfs/Images/banner-graphic-02.png?width=1400&height=886&name=banner-graphic-02.png"
               alt="SiBS contact center support team illustration"
-              class="relative z-10 max-h-full w-full max-w-[540px] object-contain object-bottom"
+              class="hero-image relative z-10 max-h-full w-full max-w-[540px] object-contain object-bottom"
             />
           </div>
         </div>
