@@ -172,6 +172,39 @@
         box-shadow: none;
       }
     }
+
+    .employee-mobile-list {
+      display: none;
+    }
+
+    @media (max-width: 767px) {
+      .employee-table-wrap {
+        display: none;
+      }
+
+      .employee-mobile-list {
+        display: grid;
+      }
+
+      .employee-record-card {
+        border: 1px solid #e7ecef;
+        border-radius: 14px;
+        background: #ffffff;
+        padding: 1rem;
+      }
+
+      .employee-record-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+      }
+
+      .employee-record-field {
+        border-radius: 10px;
+        background: #f8fafb;
+        padding: 0.75rem;
+      }
+    }
   </style>
   <link rel="stylesheet" href="responsive-final.css" />
   <script src="responsive-final.js" defer></script>
@@ -187,7 +220,7 @@
         <a href="admin-dashboard.html" class="nav-link"><i data-lucide="layout-dashboard" class="h-5 w-5"></i><span class="sidebar-label">Dashboard</span></a>
         <span class="nav-link cursor-not-allowed opacity-55" aria-disabled="true"><i data-lucide="ticket" class="h-5 w-5"></i><span class="sidebar-label">Ticketing <span class="ml-1 text-[10px] text-slate-400">In Progress</span></span></span>
         <a href="admin-employee-management.html" class="nav-link nav-link-active"><i data-lucide="users-round" class="h-5 w-5"></i><span class="sidebar-label">Employee Management</span></a>
-        <a href="admin-leave.html" class="nav-link"><i data-lucide="clipboard-list" class="h-5 w-5"></i><span class="sidebar-label">Leave Filing <span class="ml-1 text-[10px] text-slate-400">In Progress</span></span></a>
+        <span class="nav-link cursor-not-allowed opacity-55" aria-disabled="true"><i data-lucide="clipboard-list" class="h-5 w-5"></i><span class="sidebar-label">Leave Filing <span class="ml-1 text-[10px] text-slate-400">In Progress</span></span></span>
         <a href="admin-events.html" class="nav-link"><i data-lucide="calendar-days" class="h-5 w-5"></i><span class="sidebar-label">Events</span></a><a href="admin-announcements.html" class="nav-link"><i data-lucide="megaphone" class="h-5 w-5"></i><span class="sidebar-label">Announcements</span></a>
         <a href="admin-reports-analytics.html" class="nav-link"><i data-lucide="chart-no-axes-combined" class="h-5 w-5"></i><span class="sidebar-label">Reports and Analytics</span></a>
       </nav>
@@ -211,7 +244,7 @@
           </button>
         </div>
 
-        <div class="mt-5 overflow-x-auto rounded-xl border border-slate-200">
+        <div class="employee-table-wrap mt-5 overflow-x-auto rounded-xl border border-slate-200">
           <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
             <thead class="bg-slate-50 text-xs font-medium uppercase text-slate-500">
               <tr>
@@ -253,6 +286,8 @@
             </tbody>
           </table>
         </div>
+
+        <div id="employeeCardList" class="employee-mobile-list mt-5 grid gap-3"></div>
       </section>
     </section>
   </main>
@@ -384,6 +419,7 @@ const closeEmployeeModal = document.getElementById("closeEmployeeModal");
 const cancelEmployeeRegistration = document.getElementById("cancelEmployeeRegistration");
 const employeeForm = document.getElementById("employeeForm");
 const employeeTableBody = document.getElementById("employeeTableBody");
+const employeeCardList = document.getElementById("employeeCardList");
 const employeeModalTitle = document.getElementById("employeeModalTitle");
 const employeeModalDescription = document.getElementById("employeeModalDescription");
 const employeeSubmitButton = document.getElementById("employeeSubmitButton");
@@ -466,6 +502,7 @@ function updateEmployeeCounts() {
 
   if (totalCard) totalCard.textContent = totalEmployees;
   if (activeCard) activeCard.textContent = totalEmployees;
+  renderEmployeeCards();
 }
 
 function getEmployeesFromTable() {
@@ -541,6 +578,50 @@ function createEmployeeRow(employee) {
   return row;
 }
 
+function renderEmployeeCards() {
+  if (!employeeCardList) return;
+
+  const rows = Array.from(employeeTableBody.querySelectorAll("tr"));
+  if (!rows.length) {
+    employeeCardList.innerHTML = `<div class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-8 text-center text-sm text-slate-500">No employee records yet.</div>`;
+    return;
+  }
+
+  employeeCardList.innerHTML = rows.map((row, index) => {
+    const cells = row.querySelectorAll("td");
+    const employee = {
+      fullName: cells[0]?.textContent.trim() || "Unnamed Employee",
+      age: cells[1]?.textContent.trim() || "-",
+      birthday: cells[2]?.textContent.trim() || "-",
+      gender: cells[3]?.textContent.trim() || "-",
+      contactNumber: cells[4]?.textContent.trim() || "-",
+      position: cells[5]?.textContent.trim() || "Unassigned",
+      email: cells[6]?.textContent.trim() || "-"
+    };
+
+    return `
+      <article class="employee-record-card">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <p class="truncate text-base font-medium text-slate-950">${employee.fullName}</p>
+            <p class="mt-1 text-sm text-[#075d63]">${employee.position}</p>
+          </div>
+          <button type="button" data-mobile-edit-index="${index}" class="shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-[#075d63] transition hover:bg-[#e8f2f2]">Edit</button>
+        </div>
+        <div class="employee-record-grid mt-4">
+          <div class="employee-record-field"><p class="text-[11px] font-medium uppercase text-slate-400">Email</p><p class="mt-1 break-all text-sm text-slate-700">${employee.email}</p></div>
+          <div class="employee-record-field"><p class="text-[11px] font-medium uppercase text-slate-400">Contact</p><p class="mt-1 text-sm text-slate-700">${employee.contactNumber}</p></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="employee-record-field"><p class="text-[11px] font-medium uppercase text-slate-400">Age</p><p class="mt-1 text-sm text-slate-700">${employee.age}</p></div>
+            <div class="employee-record-field"><p class="text-[11px] font-medium uppercase text-slate-400">Gender</p><p class="mt-1 text-sm text-slate-700">${employee.gender}</p></div>
+          </div>
+          <div class="employee-record-field"><p class="text-[11px] font-medium uppercase text-slate-400">Birthday</p><p class="mt-1 text-sm text-slate-700">${employee.birthday}</p></div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
 function fillEmployeeFormFromRow(row) {
   const cells = row.querySelectorAll("td");
   document.getElementById("fullName").value = cells[0].textContent.trim();
@@ -598,6 +679,17 @@ employeeTableBody.addEventListener("click", (event) => {
 
   if (editButton) {
     openEditEmployeeModal(editButton.closest("tr"));
+  }
+});
+
+employeeCardList?.addEventListener("click", (event) => {
+  const editButton = event.target.closest("[data-mobile-edit-index]");
+  if (!editButton) return;
+
+  const rows = Array.from(employeeTableBody.querySelectorAll("tr"));
+  const row = rows[Number(editButton.dataset.mobileEditIndex)];
+  if (row) {
+    openEditEmployeeModal(row);
   }
 });
 
@@ -666,3 +758,4 @@ loadEmployeesFromStorage();
 const logoutModal = document.getElementById("logoutModal"); const cancelLogout = document.getElementById("cancelLogout"); const confirmLogout = document.getElementById("confirmLogout"); document.querySelectorAll("[data-logout-open]").forEach((button) => button.addEventListener("click", () => { logoutModal.classList.remove("hidden"); logoutModal.classList.add("flex"); cancelLogout.focus(); })); cancelLogout.addEventListener("click", () => { logoutModal.classList.add("hidden"); logoutModal.classList.remove("flex"); }); confirmLogout.addEventListener("click", () => { window.location.href = "index.html"; }); logoutModal.addEventListener("click", (event) => { if (event.target === logoutModal) { logoutModal.classList.add("hidden"); logoutModal.classList.remove("flex"); } });</script>
 </body>
 </html>
+
