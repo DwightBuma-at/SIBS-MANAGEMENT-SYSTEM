@@ -40,7 +40,8 @@ table {
   .employee-shell > section {
     height: 100dvh;
     overflow-y: auto;
-    transition: padding-left 200ms ease;
+    padding-top: 5rem;
+    transition: filter 200ms ease;
   }
 
   .admin-sidebar,
@@ -61,13 +62,17 @@ table {
 
   body.sidebar-collapsed .admin-sidebar,
   body.sidebar-collapsed .employee-sidebar {
-    transform: translateX(calc(-100% + 76px));
-    box-shadow: 10px 0 26px rgba(15, 23, 42, 0.08);
-  }
-
-  body.sidebar-collapsed .admin-shell > section,
-  body.sidebar-collapsed .employee-shell > section {
-    padding-left: 5.5rem;
+    inset: 0 0 auto 0;
+    width: 100%;
+    height: 4.5rem;
+    transform: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-right: 0 !important;
+    border-bottom: 1px solid #e7ecef !important;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    padding: 0.75rem 1rem !important;
   }
 
   .admin-sidebar nav,
@@ -87,6 +92,52 @@ table {
   body.sidebar-collapsed .employee-sidebar .mt-auto.hidden {
     display: none !important;
   }
+
+  body:not(.sidebar-collapsed)::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(15, 23, 42, 0.34);
+    backdrop-filter: blur(1px);
+  }
+
+  body.sidebar-collapsed .admin-sidebar nav,
+  body.sidebar-collapsed .employee-sidebar nav,
+  body.sidebar-collapsed .sidebar-module-heading,
+  body.sidebar-collapsed .account-card,
+  body.sidebar-collapsed [aria-label="Logout"] {
+    display: none !important;
+  }
+
+  body.sidebar-collapsed .admin-sidebar > .flex:first-child,
+  body.sidebar-collapsed .employee-sidebar > .flex:first-child {
+    width: 100%;
+    justify-content: center;
+  }
+
+  body.sidebar-collapsed .brand-logo {
+    min-width: auto !important;
+    width: auto !important;
+    height: auto !important;
+    border: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.sidebar-collapsed .brand-logo img {
+    height: 2.15rem !important;
+  }
+
+  body.sidebar-collapsed .sidebar-toggle {
+    position: absolute !important;
+    left: 1rem;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: none;
+    border: 0;
+    background: transparent;
+  }
 }
 
 @media (max-width: 640px) {
@@ -98,16 +149,6 @@ table {
   .employee-sidebar {
     padding-left: 0.875rem;
     padding-right: 0.875rem;
-  }
-
-  body.sidebar-collapsed .admin-sidebar,
-  body.sidebar-collapsed .employee-sidebar {
-    transform: translateX(calc(-100% + 68px));
-  }
-
-  body.sidebar-collapsed .admin-shell > section,
-  body.sidebar-collapsed .employee-shell > section {
-    padding-left: 4.85rem;
   }
 
   .brand-logo {
