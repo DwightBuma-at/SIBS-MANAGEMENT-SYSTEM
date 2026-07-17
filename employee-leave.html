@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SiBS Employee | File a Leave</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { theme: { extend: { colors: { sibs: { navy: "#112d4e", blue: "#0f75bc", sky: "#eaf6ff", mint: "#16a085", ink: "#172033" } } } } };</script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="employee-portal.css" />
+  <link rel="stylesheet" href="responsive-final.css" />
+</head>
+<body class="h-screen overflow-hidden bg-[#f7f9fa] text-sibs-ink">
+  <main class="employee-shell grid h-screen grid-rows-[auto_1fr] lg:grid-rows-1">
+    <aside class="sidebar-surface employee-sidebar border-b border-slate-200 px-4 py-3 shadow-none lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r lg:border-slate-200 lg:px-4 lg:py-5">
+      <div class="flex items-center justify-between gap-4">
+        <a href="employee-dashboard.html" class="flex items-center gap-3">
+          <span class="brand-logo flex h-14 min-w-14 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 lg:h-16 lg:min-w-[150px]">
+            <img src="https://sibscontactcenter.com/hubfs/Logo/SiBS-logo.svg" alt="SiBS logo" class="h-11 w-auto" />
+          </span>
+          <span class="brand-copy hidden"><span class="block text-sm font-medium text-sibs-navy">SiBS Employee</span><span class="block text-xs text-slate-500">Contact Center</span></span>
+        </a>
+        <button type="button" id="sidebarToggle" class="sidebar-toggle inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-slate-500 transition hover:border-[#9bc6c8] hover:bg-[#e8f2f2] hover:text-[#075d63]" aria-label="Toggle sidebar"><i data-lucide="panel-left-close" class="h-5 w-5"></i></button>
+      </div>
+      <div class="sidebar-module-heading mt-6 px-3 text-[11px] font-medium uppercase text-slate-400">Employee Modules</div>
+      <nav class="mt-2 flex gap-1 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
+        <a href="employee-dashboard.html" class="nav-link"><i data-lucide="layout-dashboard" class="h-5 w-5"></i><span class="sidebar-label">Dashboard</span></a>
+        <span class="nav-link cursor-not-allowed opacity-55" aria-disabled="true"><i data-lucide="ticket" class="h-5 w-5"></i><span class="sidebar-label">Ticketing <span class="ml-1 text-[10px] text-slate-400">In Progress</span></span></span>
+        <span class="nav-link nav-link-active cursor-not-allowed opacity-70" aria-disabled="true"><i data-lucide="clipboard-list" class="h-5 w-5"></i><span class="sidebar-label">File a Leave <span class="ml-1 text-[10px] text-[#075d63]">In Progress</span></span></span>
+        <a href="employee-events.html" class="nav-link"><i data-lucide="calendar-days" class="h-5 w-5"></i><span class="sidebar-label">Events</span></a>
+        <a href="employee-announcements.html" class="nav-link"><i data-lucide="megaphone" class="h-5 w-5"></i><span class="sidebar-label">Announcements</span></a>
+      </nav>
+      <div class="mt-auto hidden lg:block">
+        <div class="border-t border-slate-200 pt-4">
+          <div class="flex items-center gap-3">
+            <div class="account-card flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3">
+              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white p-1.5"><img src="https://sibscontactcenter.com/hubfs/Logo/SiBS-logo.svg" alt="SiBS logo" class="h-5 w-auto" /></div>
+              <div class="account-copy min-w-0"><p class="truncate text-sm font-medium leading-5 text-sibs-navy" data-employee-name>Employee</p><p class="truncate text-xs text-slate-500" data-employee-position>Signed in</p></div>
+            </div>
+            <button type="button" data-logout-open class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-red-600" aria-label="Logout"><i data-lucide="log-out" class="h-5 w-5"></i></button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="min-h-0 overflow-y-auto px-4 py-5 sm:px-6 lg:px-7 lg:py-6">
+      <header>
+        <p class="text-sm font-medium text-[#075d63]">File a Leave</p>
+        <h1 class="mt-1 text-[1.7rem] font-medium text-slate-950">Leave Request</h1>
+        <p class="mt-2 text-sm text-slate-500">This employee leave filing subsystem is currently in progress.</p>
+      </header>
+
+      <section class="mt-6 grid gap-5 xl:grid-cols-[0.8fr_1.2fr]">
+        <article class="employee-card p-6">
+          <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-[#e8f2f2] text-[#075d63]">
+            <i data-lucide="construction" class="h-7 w-7"></i>
+          </div>
+          <h2 class="mt-5 text-xl font-medium text-slate-950">Leave filing is being prepared</h2>
+          <p class="mt-2 text-sm leading-6 text-slate-500">
+            Employees will be able to submit leave requests here once the approval workflow is enabled.
+          </p>
+          <div class="mt-5 rounded-xl border border-slate-100 bg-slate-50 p-4">
+            <p class="text-xs font-medium uppercase text-slate-400">Status</p>
+            <p class="mt-1 text-sm font-medium text-[#075d63]">In Progress</p>
+          </div>
+        </article>
+
+        <article class="employee-card p-6">
+          <h2 class="text-lg font-medium text-slate-950">Planned Request Details</h2>
+          <p class="mt-1 text-sm text-slate-500">The final form can include these leave request fields.</p>
+          <div class="mt-5 grid gap-3 sm:grid-cols-2">
+            <div class="rounded-xl border border-slate-100 bg-white p-4"><p class="text-sm font-medium text-slate-950">Leave Type</p><p class="mt-1 text-xs text-slate-500">Vacation, sick, emergency, or others</p></div>
+            <div class="rounded-xl border border-slate-100 bg-white p-4"><p class="text-sm font-medium text-slate-950">Date Range</p><p class="mt-1 text-xs text-slate-500">Start date and return date</p></div>
+            <div class="rounded-xl border border-slate-100 bg-white p-4"><p class="text-sm font-medium text-slate-950">Reason</p><p class="mt-1 text-xs text-slate-500">Employee leave explanation</p></div>
+            <div class="rounded-xl border border-slate-100 bg-white p-4"><p class="text-sm font-medium text-slate-950">Approval Status</p><p class="mt-1 text-xs text-slate-500">Pending, approved, or declined</p></div>
+          </div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <div id="logoutModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/55 px-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
+    <div class="w-full max-w-sm employee-card p-6 text-center shadow-2xl shadow-slate-950/20">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-red-600"><i data-lucide="log-out" class="h-7 w-7"></i></div>
+      <h2 id="logoutTitle" class="mt-5 text-xl font-medium text-slate-950">Confirm Logout</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-500">Are you sure you want to logout from the employee portal?</p>
+      <div class="mt-6 grid grid-cols-2 gap-3"><button type="button" id="cancelLogout" class="formal-button bg-slate-100 px-4 py-3 text-sm text-slate-600 transition hover:bg-slate-200">Cancel</button><button type="button" id="confirmLogout" class="formal-button bg-red-600 px-4 py-3 text-sm text-white transition hover:bg-red-700">Logout</button></div>
+    </div>
+  </div>
+
+  <script src="employee-portal.js"></script>
+  <script>initializeEmployeeShell();</script>
+</body>
+</html>

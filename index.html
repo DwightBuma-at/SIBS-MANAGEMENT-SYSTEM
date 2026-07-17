@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SiBS Contact Center | Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sibs: {
+              navy: "#112d4e",
+              blue: "#0f75bc",
+              sky: "#eaf6ff",
+              mint: "#16a085",
+              ink: "#172033"
+            }
+          },
+          boxShadow: {
+            soft: "0 24px 80px rgba(17, 45, 78, 0.16)"
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .hero-pattern {
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.24), transparent 28%),
+        linear-gradient(135deg, rgba(17, 45, 78, 0.98), rgba(15, 117, 188, 0.94));
+    }
+
+    .field:focus-within {
+      border-color: #0f75bc;
+      box-shadow: 0 0 0 4px rgba(15, 117, 188, 0.12);
+    }
+
+    @media (max-height: 720px) {
+      .short-screen-hide {
+        display: none;
+      }
+    }
+
+    @media (max-height: 640px) {
+      .short-screen-tight {
+        gap: 0.75rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="responsive-final.css" />
+</head>
+<body class="h-screen bg-slate-100 text-sibs-ink">
+  <main class="flex h-screen items-center justify-center overflow-hidden p-3 sm:p-5 lg:p-6">
+    <section class="grid h-full max-h-[860px] w-full max-w-6xl grid-rows-[41%_59%] overflow-hidden rounded-3xl bg-white shadow-soft lg:grid-cols-[1.04fr_0.96fr] lg:grid-rows-1">
+      <aside class="hero-pattern relative flex min-h-0 flex-col overflow-hidden p-5 text-white sm:p-7 lg:p-9">
+        <div class="relative z-10 flex min-h-0 flex-1 flex-col">
+          <div class="inline-flex w-fit rounded-full bg-white px-4 py-2 shadow-lg shadow-slate-950/10">
+            <img
+              src="https://sibscontactcenter.com/hubfs/Logo/SiBS-logo.svg"
+              alt="SiBS logo"
+              class="h-8 w-auto sm:h-9"
+            />
+          </div>
+
+          <div class="mt-5 max-w-xl sm:mt-7 lg:mt-9">
+            <p class="text-xs font-semibold uppercase text-cyan-100 sm:text-sm">Contact Center Portal</p>
+            <h1 class="mt-3 max-w-[12ch] text-[clamp(2.15rem,5.2vw,4.4rem)] font-bold leading-[0.98] sm:mt-4 lg:max-w-[10ch]">
+              Extraordinary outsourcing solutions.
+            </h1>
+            <p class="mt-4 max-w-lg text-sm leading-6 text-blue-50 sm:text-base sm:leading-7">
+              Access your SiBS workspace for personalized BPO services, customer support,
+              and operations built for dependable teams.
+            </p>
+          </div>
+
+          <div class="relative z-20 mt-5 grid grid-cols-3 gap-2 sm:mt-6">
+            <div class="rounded-2xl border border-white/20 bg-white/12 p-3 backdrop-blur">
+              <p class="text-xl font-bold sm:text-2xl">24/7</p>
+              <p class="mt-1 text-xs leading-5 text-blue-50 sm:text-sm">Multi-location support</p>
+            </div>
+            <div class="rounded-2xl border border-white/20 bg-white/12 p-3 backdrop-blur">
+              <p class="text-xl font-bold sm:text-2xl">Omni</p>
+              <p class="mt-1 text-xs leading-5 text-blue-50 sm:text-sm">Phone, email, chat, social</p>
+            </div>
+            <div class="rounded-2xl border border-white/20 bg-white/12 p-3 backdrop-blur">
+              <p class="text-xl font-bold sm:text-2xl">Global</p>
+              <p class="mt-1 text-xs leading-5 text-blue-50 sm:text-sm">Multilingual service</p>
+            </div>
+          </div>
+
+          <div class="relative mt-auto hidden min-h-0 flex-1 items-end justify-center sm:flex">
+            <div class="absolute bottom-3 h-[48%] w-[78%] rounded-[2rem] bg-white/10 blur-2xl"></div>
+            <img
+              src="https://sibscontactcenter.com/hs-fs/hubfs/Images/banner-graphic-02.png?width=1400&height=886&name=banner-graphic-02.png"
+              alt="SiBS contact center support team illustration"
+              class="relative z-10 max-h-full w-full max-w-[540px] object-contain object-bottom"
+            />
+          </div>
+        </div>
+      </aside>
+
+      <section class="flex min-h-0 items-center justify-center overflow-hidden px-5 py-5 sm:px-8 lg:px-12">
+        <div class="w-full max-w-md">
+          <div class="mb-5 sm:mb-7">
+            <p class="text-xs font-semibold uppercase text-sibs-blue sm:text-sm">Welcome back</p>
+            <h2 class="mt-2 text-2xl font-bold text-sibs-navy sm:text-3xl">Sign in to your account</h2>
+            <p class="mt-2 text-sm leading-6 text-slate-500">
+              Enter your company credentials to continue to the SiBS contact center dashboard.
+            </p>
+          </div>
+
+          <form id="loginForm" class="short-screen-tight space-y-4" novalidate>
+            <div>
+              <label for="email" class="mb-2 block text-sm font-semibold text-slate-700">Email or username</label>
+              <div class="field flex items-center rounded-2xl border border-slate-200 bg-white px-4 transition">
+                <input
+                  id="email"
+                  name="email"
+                  type="text"
+                  autocomplete="username"
+                  placeholder="Enter your username"
+                  class="h-12 w-full border-0 bg-transparent py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <div class="mb-2 flex items-center justify-between gap-4">
+                <label for="password" class="block text-sm font-semibold text-slate-700">Password</label>
+                <a href="#" class="text-sm font-semibold text-sibs-blue hover:text-sibs-navy">Forgot password?</a>
+              </div>
+              <div class="field flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 transition">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autocomplete="current-password"
+                  placeholder="Enter your password"
+                  class="h-12 min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+                  required
+                />
+                <button
+                  type="button"
+                  id="togglePassword"
+                  class="shrink-0 text-sm font-semibold text-slate-500 hover:text-sibs-blue"
+                  aria-label="Show password"
+                >
+                  Show
+                </button>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <label class="inline-flex cursor-pointer items-center gap-3 text-sm text-slate-600">
+                <input
+                  type="checkbox"
+                  class="h-4 w-4 rounded border-slate-300 text-sibs-blue focus:ring-sibs-blue"
+                />
+                Remember me
+              </label>
+              <span class="text-sm text-slate-400">Secure access</span>
+            </div>
+
+            <button
+              type="submit"
+              class="flex w-full items-center justify-center rounded-2xl bg-sibs-blue px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition hover:-translate-y-0.5 hover:bg-sibs-navy focus:outline-none focus:ring-4 focus:ring-blue-200"
+            >
+              Sign In
+            </button>
+
+          </form>
+
+          <div class="short-screen-hide mt-5 rounded-2xl bg-sibs-sky p-4 sm:mt-6">
+            <p class="text-sm font-semibold text-sibs-navy">Need help accessing your account?</p>
+            <p class="mt-1 text-sm leading-6 text-slate-600">
+              Contact your SiBS administrator or support team to confirm your login access.
+            </p>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div
+    id="loginModal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/55 px-4 backdrop-blur-sm"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+  >
+    <div class="w-full max-w-sm rounded-3xl bg-white p-6 text-center shadow-2xl shadow-slate-950/20">
+      <div
+        id="modalIcon"
+        class="mx-auto flex h-14 w-14 items-center justify-center rounded-full text-2xl font-bold"
+      ></div>
+      <h3 id="modalTitle" class="mt-5 text-xl font-bold text-sibs-navy"></h3>
+      <p id="modalText" class="mt-2 text-sm leading-6 text-slate-500"></p>
+      <button
+        type="button"
+        id="modalButton"
+        class="mt-6 w-full rounded-2xl bg-sibs-blue px-5 py-3 text-sm font-bold text-white transition hover:bg-sibs-navy focus:outline-none focus:ring-4 focus:ring-blue-200"
+      >
+        Continue
+      </button>
+      <div id="modalLoader" class="mt-6 hidden items-center justify-center gap-3 text-sm font-semibold text-sibs-blue">
+        <span class="h-5 w-5 animate-spin rounded-full border-2 border-sibs-blue border-t-transparent"></span>
+        Loading dashboard...
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("loginForm");
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+    const loginModal = document.getElementById("loginModal");
+    const modalIcon = document.getElementById("modalIcon");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalText = document.getElementById("modalText");
+    const modalButton = document.getElementById("modalButton");
+    const modalLoader = document.getElementById("modalLoader");
+    let modalAction = null;
+    let modalRedirectTimer = null;
+
+    togglePassword.addEventListener("click", () => {
+      const isHidden = password.type === "password";
+      password.type = isHidden ? "text" : "password";
+      togglePassword.textContent = isHidden ? "Hide" : "Show";
+      togglePassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+    });
+
+    function showLoginModal(type, title, message, action) {
+      const isSuccess = type === "success";
+
+      modalIcon.textContent = isSuccess ? "✓" : "!";
+      modalIcon.className = isSuccess
+        ? "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-2xl font-bold text-emerald-700"
+        : "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-2xl font-bold text-red-700";
+      modalTitle.textContent = title;
+      modalText.textContent = message;
+      modalButton.textContent = isSuccess ? "Go to Dashboard" : "Try Again";
+      modalButton.classList.remove("hidden");
+      modalLoader.classList.add("hidden");
+      modalLoader.classList.remove("flex");
+      modalAction = action || null;
+      loginModal.classList.remove("hidden");
+      loginModal.classList.add("flex");
+      
+      if (isSuccess) {
+        modalButton.classList.add("hidden");
+        modalLoader.classList.remove("hidden");
+        modalLoader.classList.add("flex");
+        modalRedirectTimer = setTimeout(() => {
+          if (typeof modalAction === "function") {
+            modalAction();
+          }
+        }, 2500);
+        return;
+      }
+
+      modalButton.focus();
+    }
+
+    function closeLoginModal() {
+      loginModal.classList.add("hidden");
+      loginModal.classList.remove("flex");
+      modalAction = null;
+      clearTimeout(modalRedirectTimer);
+    }
+
+    modalButton.addEventListener("click", () => {
+      if (typeof modalAction === "function") {
+        modalAction();
+        return;
+      }
+
+      closeLoginModal();
+      password.focus();
+    });
+
+    function getRegisteredEmployees() {
+      try {
+        const employees = JSON.parse(localStorage.getItem("sibsEmployees") || "[]");
+        return Array.isArray(employees) ? employees : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      if (!email.value.trim() || !password.value.trim()) {
+        showLoginModal(
+          "error",
+          "Missing credentials",
+          "Please enter both your username and password before signing in."
+        );
+        return;
+      }
+
+      if (email.value.trim() === "admin" && password.value === "admin123") {
+        showLoginModal(
+          "success",
+          "Login successful",
+          "Welcome back, Admin. You will now be redirected to the dashboard.",
+          () => {
+            window.location.href = "admin-dashboard.html";
+          }
+        );
+        return;
+      }
+
+      const employee = getRegisteredEmployees().find((item) => {
+        return (item.email || "").trim().toLowerCase() === email.value.trim().toLowerCase()
+          && String(item.password || "") === password.value;
+      });
+
+      if (employee) {
+        try {
+          localStorage.setItem("sibsCurrentEmployee", JSON.stringify({
+            fullName: employee.fullName,
+            email: employee.email,
+            position: employee.position
+          }));
+        } catch (error) {
+        }
+
+        showLoginModal(
+          "success",
+          "Login successful",
+          `Welcome back, ${employee.fullName || "Employee"}. You will now be redirected to your workspace.`,
+          () => {
+            window.location.href = "employee-dashboard.html";
+          }
+        );
+        return;
+      }
+
+      showLoginModal(
+        "error",
+        "Login failed",
+        "The username or password you entered is incorrect, or your employee account has not been registered by the admin."
+      );
+    });
+  </script>
+</body>
+</html>

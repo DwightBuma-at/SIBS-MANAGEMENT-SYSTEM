@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SiBS Admin | Reports and Analytics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { theme: { extend: { colors: { sibs: { navy: "#112d4e", blue: "#0f75bc", sky: "#eaf6ff", mint: "#16a085", ink: "#172033" } }, boxShadow: { soft: "0 20px 60px rgba(17, 45, 78, 0.12)" } } } };</script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f7f9fa;
+      color: #161f27;
+    }
+
+    .sidebar-surface {
+      background: #ffffff;
+    }
+
+    .nav-link {
+      position: relative;
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      gap: 0.7rem;
+      border-radius: 10px;
+      padding: 0.72rem 0.75rem;
+      color: #2f3a42;
+      font-size: 0.92rem;
+      font-weight: 400;
+      line-height: 1.25rem;
+      transition: color 160ms ease, background-color 160ms ease;
+    }
+
+    .nav-link:hover {
+      background: #f2f6f7;
+      color: #0c5960;
+    }
+
+    .nav-link-active {
+      background: #e8f2f2;
+      color: #075d63;
+      font-weight: 500;
+    }
+
+    .nav-link-active::before {
+      content: "";
+      position: absolute;
+      left: 0.45rem;
+      top: 0.62rem;
+      bottom: 0.62rem;
+      width: 3px;
+      border-radius: 999px;
+      background: #075d63;
+    }
+
+    .nav-link i,
+    .nav-link svg {
+      height: 1.05rem;
+      width: 1.05rem;
+      color: currentColor;
+      stroke-width: 1.65;
+    }
+
+    .admin-card {
+      border: 1px solid #e7ecef;
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: none;
+    }
+
+    .formal-button {
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    .chart-panel {
+      position: relative;
+      min-height: 280px;
+    }
+
+    .empty-panel {
+      display: flex;
+      min-height: 230px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      border: 1px dashed #cdd9dd;
+      background: #f8fafb;
+      color: #64748b;
+      text-align: center;
+    }
+
+    .admin-shell {
+      transition: grid-template-columns 200ms ease;
+    }
+
+    @media (min-width: 1024px) {
+      .admin-shell {
+        grid-template-columns: 300px minmax(0, 1fr);
+      }
+
+      body.sidebar-collapsed .admin-shell {
+        grid-template-columns: 88px minmax(0, 1fr);
+      }
+
+      body.sidebar-collapsed .brand-copy,
+      body.sidebar-collapsed .sidebar-label,
+      body.sidebar-collapsed .sidebar-module-heading,
+      body.sidebar-collapsed .account-copy {
+        display: none;
+      }
+
+      body.sidebar-collapsed .brand-logo {
+        width: 3.25rem;
+        min-width: 3.25rem;
+        padding-left: 0.65rem;
+        padding-right: 0.65rem;
+      }
+
+      body.sidebar-collapsed .brand-logo img {
+        height: 1.75rem;
+      }
+
+      body.sidebar-collapsed .nav-link {
+        justify-content: center;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+
+      body.sidebar-collapsed .nav-link-active::before {
+        left: 0;
+      }
+
+      body.sidebar-collapsed .account-card {
+        justify-content: center;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+    }
+
+    .sidebar-toggle {
+      border: 1px solid #dfe7ea;
+      background: #ffffff;
+    }
+
+    .sidebar-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .brand-logo {
+      transition: width 200ms ease, min-width 200ms ease, padding 200ms ease;
+    }
+
+    @media (max-width: 1023px) {
+      body.sidebar-collapsed .sidebar-module-heading,
+      body.sidebar-collapsed .admin-sidebar nav,
+      body.sidebar-collapsed .account-card,
+      body.sidebar-collapsed [aria-label="Logout"] {
+        display: none;
+      }
+
+      body.sidebar-collapsed .admin-sidebar {
+        padding-bottom: 0.75rem;
+      }
+    }
+
+    .admin-sidebar {
+      position: relative;
+      overflow: visible;
+    }
+
+    .sidebar-toggle {
+      position: absolute;
+      top: 1.65rem;
+      right: -1.15rem;
+      z-index: 40;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    @media (max-width: 1023px) {
+      .sidebar-toggle {
+        position: static;
+        box-shadow: none;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="responsive-final.css" />
+</head>
+<body class="h-screen overflow-hidden bg-[#f7f9fa] text-sibs-ink">
+  <main class="admin-shell grid h-screen grid-rows-[auto_1fr] lg:grid-rows-1">
+    <aside class="sidebar-surface admin-sidebar border-b border-slate-200 px-4 py-3 shadow-none lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r lg:border-slate-200 lg:px-4 lg:py-5">
+      <div class="flex items-center justify-between gap-4"><a href="admin-dashboard.html" class="flex items-center gap-3"><span class="brand-logo flex h-14 min-w-14 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 lg:h-16 lg:min-w-[150px]"><img src="https://sibscontactcenter.com/hubfs/Logo/SiBS-logo.svg" alt="SiBS logo" class="h-11 w-auto" /></span><span class="brand-copy hidden"><span class="block text-sm font-medium text-sibs-navy">SiBS Admin</span><span class="block text-xs text-slate-500">Contact Center</span></span></a><button type="button" id="sidebarToggle" class="sidebar-toggle inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-slate-500 transition hover:border-[#9bc6c8] hover:bg-[#e8f2f2] hover:text-[#075d63]" aria-label="Toggle sidebar"><i data-lucide="panel-left-close" class="h-5 w-5"></i></button></div>
+      <div class="sidebar-module-heading mt-6 px-3 text-[11px] font-medium uppercase text-slate-400">Modules</div><nav class="mt-2 flex gap-1 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0"><a href="admin-dashboard.html" class="nav-link"><i data-lucide="layout-dashboard" class="h-5 w-5"></i><span class="sidebar-label">Dashboard</span></a><span class="nav-link cursor-not-allowed opacity-55" aria-disabled="true"><i data-lucide="ticket" class="h-5 w-5"></i><span class="sidebar-label">Ticketing <span class="ml-1 text-[10px] text-slate-400">In Progress</span></span></span><a href="admin-employee-management.html" class="nav-link"><i data-lucide="users-round" class="h-5 w-5"></i><span class="sidebar-label">Employee Management</span></a><a href="admin-leave.html" class="nav-link"><i data-lucide="clipboard-list" class="h-5 w-5"></i><span class="sidebar-label">Leave Filing <span class="ml-1 text-[10px] text-slate-400">In Progress</span></span></a><a href="admin-events.html" class="nav-link"><i data-lucide="calendar-days" class="h-5 w-5"></i><span class="sidebar-label">Events</span></a><a href="admin-announcements.html" class="nav-link"><i data-lucide="megaphone" class="h-5 w-5"></i><span class="sidebar-label">Announcements</span></a><a href="admin-reports-analytics.html" class="nav-link nav-link-active"><i data-lucide="chart-no-axes-combined" class="h-5 w-5"></i><span class="sidebar-label">Reports and Analytics</span></a></nav>
+      <div class="mt-auto hidden lg:block"><div class="border-t border-slate-200 pt-4"><div class="flex items-center gap-3"><div class="account-card flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3"><div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white p-1.5"><img src="https://sibscontactcenter.com/hubfs/Logo/SiBS-logo.svg" alt="SiBS logo" class="h-5 w-auto" /></div><div class="account-copy min-w-0"><p class="truncate text-sm font-medium leading-5 text-sibs-navy">Admin</p><p class="truncate text-xs text-slate-500">Signed in</p></div></div><button type="button" data-logout-open class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-red-600" aria-label="Logout"><i data-lucide="log-out" class="h-5 w-5"></i></button></div></div></div>
+    </aside>
+    <section class="min-h-0 overflow-y-auto px-4 py-5 sm:px-6 lg:px-7 lg:py-6">
+      <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm font-medium text-[#075d63]">Reports and Analytics</p>
+          <h1 class="mt-1 text-[1.7rem] font-medium text-slate-950">Operational Intelligence</h1>
+          <p class="mt-2 text-sm text-slate-500">Audit data quality, workforce structure, content freshness, and schedule readiness.</p>
+        </div>
+      </header>
+
+      <section class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <article class="admin-card p-5">
+          <p class="text-sm font-normal text-slate-500">Registry Completeness</p>
+          <p id="reportCompletenessScore" class="mt-4 text-[1.7rem] font-medium text-slate-950">0%</p>
+          <p id="reportCompletenessInsight" class="mt-1 text-sm text-slate-500">No employee records yet</p>
+        </article>
+        <article class="admin-card p-5">
+          <p class="text-sm font-normal text-slate-500">Records Needing Review</p>
+          <p id="reportRegistryIssues" class="mt-4 text-[1.7rem] font-medium text-slate-950">0</p>
+          <p id="reportRegistryIssueInsight" class="mt-1 text-sm text-slate-500">No registry issues found</p>
+        </article>
+        <article class="admin-card p-5">
+          <p class="text-sm font-normal text-slate-500">Schedule Horizon</p>
+          <p id="reportEventWindow" class="mt-4 text-[1.7rem] font-medium text-slate-950">None</p>
+          <p id="reportEventWindowInsight" class="mt-1 text-sm text-slate-500">No events scheduled</p>
+        </article>
+        <article class="admin-card p-5">
+          <p class="text-sm font-normal text-slate-500">Content Freshness</p>
+          <p id="reportContentFreshness" class="mt-4 text-[1.7rem] font-medium text-slate-950">None</p>
+          <p id="reportContentFreshnessInsight" class="mt-1 text-sm text-slate-500">No communication activity</p>
+        </article>
+      </section>
+
+      <section class="mt-6 grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
+        <article class="admin-card p-5">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-medium text-slate-950">Employee Age Bands</h2>
+              <p class="mt-1 text-sm text-slate-500">Age ranges calculated from employee birthdays and age fields.</p>
+            </div>
+            <span class="rounded-lg bg-[#e8f2f2] px-3 py-1 text-xs font-medium text-[#075d63]">Workforce</span>
+          </div>
+          <div id="reportAgeEmpty" class="empty-panel mt-5 hidden">Add employee birthdays to generate age-band analytics.</div>
+          <div id="reportAgeChartWrap" class="chart-panel mt-5">
+            <canvas id="reportAgeChart"></canvas>
+          </div>
+        </article>
+
+        <article class="admin-card p-5">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-medium text-slate-950">Schedule Classification</h2>
+              <p class="mt-1 text-sm text-slate-500">Events grouped by timing status.</p>
+            </div>
+            <span class="rounded-lg bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Events</span>
+          </div>
+          <div id="reportScheduleEmpty" class="empty-panel mt-5 hidden">Post events to generate schedule classification.</div>
+          <div id="reportScheduleChartWrap" class="chart-panel mt-5">
+            <canvas id="reportScheduleChart"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <section class="mt-6 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
+        <article class="admin-card p-5">
+          <div>
+            <h2 class="text-lg font-medium text-slate-950">Content Mix</h2>
+            <p class="mt-1 text-sm text-slate-500">Portal communication records by content type.</p>
+          </div>
+          <div id="reportContentMixEmpty" class="empty-panel mt-5 hidden">Create announcements or events to generate content mix analytics.</div>
+          <div id="reportContentMixChartWrap" class="chart-panel mt-5">
+            <canvas id="reportContentMixChart"></canvas>
+          </div>
+        </article>
+
+        <article class="admin-card p-5">
+          <div>
+            <h2 class="text-lg font-medium text-slate-950">Registry Data Audit</h2>
+            <p class="mt-1 text-sm text-slate-500">Employees with missing account or profile information.</p>
+          </div>
+          <div class="mt-5 overflow-x-auto rounded-xl border border-slate-100">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 text-xs uppercase text-slate-500">
+                <tr>
+                  <th class="px-4 py-3 font-medium">Employee</th>
+                  <th class="px-4 py-3 font-medium">Position</th>
+                  <th class="px-4 py-3 font-medium">Needs Review</th>
+                </tr>
+              </thead>
+              <tbody id="reportAuditTable" class="divide-y divide-slate-100 bg-white text-slate-700"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="mt-6 grid gap-5 xl:grid-cols-2">
+        <article class="admin-card p-5">
+          <h2 class="text-lg font-medium text-slate-950">Upcoming Event Horizon</h2>
+          <p class="mt-1 text-sm text-slate-500">Scheduled events ordered by nearest date.</p>
+          <div id="reportEventHorizonList" class="mt-5 space-y-3"></div>
+        </article>
+
+        <article class="admin-card p-5">
+          <h2 class="text-lg font-medium text-slate-950">Leave Filing Readiness</h2>
+          <p class="mt-1 text-sm text-slate-500">Administrative status for the leave request subsystem.</p>
+          <div class="mt-5 rounded-xl border border-slate-100 bg-slate-50 p-5">
+            <div class="flex items-start gap-3">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e8f2f2] text-[#075d63]"><i data-lucide="clipboard-list" class="h-5 w-5"></i></span>
+              <div>
+                <p class="text-sm font-medium text-slate-950">Leave data source is not active yet</p>
+                <p class="mt-1 text-sm leading-6 text-slate-500">Requests will appear in reports after the Leave Filing workflow starts saving employee submissions.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </section>
+  </main>
+  <div id="logoutModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/55 px-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="logoutTitle"><div class="w-full max-w-sm admin-card p-6 text-center shadow-2xl shadow-slate-950/20"><div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-red-600"><i data-lucide="log-out" class="h-7 w-7"></i></div><h2 id="logoutTitle" class="mt-5 text-xl font-bold text-sibs-navy">Confirm Logout</h2><p class="mt-2 text-sm leading-6 text-slate-500">Are you sure you want to logout from the admin dashboard?</p><div class="mt-6 grid grid-cols-2 gap-3"><button type="button" id="cancelLogout" class="formal-button bg-slate-100 px-4 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-200">Cancel</button><button type="button" id="confirmLogout" class="formal-button bg-red-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-red-700">Logout</button></div></div></div>
+  <script>    if (window.lucide) {
+      lucide.createIcons();
+    }
+
+    const sidebarToggle = document.getElementById("sidebarToggle");
+
+    function refreshSidebarToggleIcon(isCollapsed) {
+      if (!sidebarToggle) return;
+      sidebarToggle.innerHTML = isCollapsed
+        ? '<i data-lucide="panel-left-open" class="h-5 w-5"></i>'
+        : '<i data-lucide="panel-left-close" class="h-5 w-5"></i>';
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    function setSidebarCollapsed(isCollapsed) {
+      document.body.classList.toggle("sidebar-collapsed", isCollapsed);
+      refreshSidebarToggleIcon(isCollapsed);
+    }
+
+    let savedSidebarState = false;
+    try {
+      savedSidebarState = localStorage.getItem("sibsSidebarCollapsed") === "true";
+    } catch (error) {
+      savedSidebarState = false;
+    }
+
+    setSidebarCollapsed(savedSidebarState);
+
+    sidebarToggle?.addEventListener("click", () => {
+      const isCollapsed = !document.body.classList.contains("sidebar-collapsed");
+      try {
+        localStorage.setItem("sibsSidebarCollapsed", String(isCollapsed));
+      } catch (error) {
+      }
+      setSidebarCollapsed(isCollapsed);
+    });
+
+function readReportCollection(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function reportCountBy(items, key) {
+  return items.reduce((counts, item) => {
+    const label = (item[key] || "Unassigned").trim() || "Unassigned";
+    counts[label] = (counts[label] || 0) + 1;
+    return counts;
+  }, {});
+}
+
+function reportFormatDate(value) {
+  if (!value) return "No date set";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "No date set";
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function reportFormatDateTime(value) {
+  if (!value) return "No activity yet";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "No activity yet";
+  return date.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+}
+
+function reportDateKey(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toISOString().slice(0, 10);
+}
+
+function latestSevenDays() {
+  const days = [];
+  const today = new Date();
+  for (let index = 6; index >= 0; index -= 1) {
+    const date = new Date(today);
+    date.setDate(today.getDate() - index);
+    days.push({
+      key: date.toISOString().slice(0, 10),
+      label: date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    });
+  }
+  return days;
+}
+
+function reportSortEvents(events) {
+  return [...events].sort((first, second) => {
+    const firstDate = new Date(`${first.date || ""}T${first.time || "00:00"}`);
+    const secondDate = new Date(`${second.date || ""}T${second.time || "00:00"}`);
+    return firstDate - secondDate;
+  });
+}
+
+function reportRenderEmptyList(target, message) {
+  target.innerHTML = `<div class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">${message}</div>`;
+}
+
+function reportRenderChart(canvasId, emptyId, wrapperId, type, labels, datasets, options = {}) {
+  const empty = document.getElementById(emptyId);
+  const wrapper = document.getElementById(wrapperId);
+  const canvas = document.getElementById(canvasId);
+  const flatValues = datasets.flatMap((dataset) => dataset.data || []);
+  const hasData = labels.length > 0 && flatValues.some((value) => value > 0);
+
+  if (!hasData || !window.Chart) {
+    empty.classList.remove("hidden");
+    wrapper.classList.add("hidden");
+    return;
+  }
+
+  empty.classList.add("hidden");
+  wrapper.classList.remove("hidden");
+
+  new Chart(canvas, {
+    type,
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: "bottom",
+          labels: { boxWidth: 10, color: "#475569", font: { size: 12 } }
+        }
+      },
+      scales: type === "bar" || type === "line" ? {
+        y: { beginAtZero: true, ticks: { precision: 0, color: "#64748b" }, grid: { color: "#edf2f4" } },
+        x: { ticks: { color: "#64748b" }, grid: { display: false } }
+      } : {},
+      ...options
+    }
+  });
+}
+
+function renderReports() {
+  const employees = readReportCollection("sibsEmployees");
+  const announcements = readReportCollection("sibsAnnouncements");
+  const events = readReportCollection("sibsEvents");
+  const sortedAnnouncements = [...announcements].sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0));
+  const sortedEvents = reportSortEvents(events);
+  const requiredEmployeeFields = ["fullName", "birthday", "gender", "contactNumber", "position", "email", "password"];
+  const employeeIssues = employees.map((employee) => {
+    const missing = requiredEmployeeFields.filter((field) => !String(employee[field] || "").trim());
+    return { employee, missing };
+  }).filter((item) => item.missing.length > 0);
+  const totalRequiredFields = employees.length * requiredEmployeeFields.length;
+  const completedRequiredFields = employees.reduce((count, employee) => {
+    return count + requiredEmployeeFields.filter((field) => String(employee[field] || "").trim()).length;
+  }, 0);
+  const completeness = totalRequiredFields ? Math.round((completedRequiredFields / totalRequiredFields) * 100) : 0;
+  const newestContent = [sortedAnnouncements[0]?.updatedAt || sortedAnnouncements[0]?.createdAt, sortedEvents[0]?.createdAt]
+    .filter(Boolean)
+    .sort((a, b) => new Date(b) - new Date(a))[0];
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const tomorrowStart = new Date(todayStart);
+  tomorrowStart.setDate(todayStart.getDate() + 1);
+  const scheduleGroups = events.reduce((groups, eventItem) => {
+    const eventDate = new Date(`${eventItem.date || ""}T${eventItem.time || "00:00"}`);
+    if (Number.isNaN(eventDate.getTime())) {
+      groups.unscheduled += 1;
+    } else if (eventDate < todayStart) {
+      groups.past += 1;
+    } else if (eventDate < tomorrowStart) {
+      groups.today += 1;
+    } else {
+      groups.upcoming += 1;
+    }
+    return groups;
+  }, { past: 0, today: 0, upcoming: 0, unscheduled: 0 });
+  const ageBands = employees.reduce((bands, employee) => {
+    const age = Number.parseInt(employee.age, 10);
+    if (!Number.isFinite(age)) return bands;
+    if (age < 25) bands["Under 25"] += 1;
+    else if (age <= 34) bands["25-34"] += 1;
+    else if (age <= 44) bands["35-44"] += 1;
+    else if (age <= 54) bands["45-54"] += 1;
+    else bands["55+"] += 1;
+    return bands;
+  }, { "Under 25": 0, "25-34": 0, "35-44": 0, "45-54": 0, "55+": 0 });
+  const nearestEvent = sortedEvents.find((eventItem) => {
+    const eventDate = new Date(`${eventItem.date || ""}T${eventItem.time || "00:00"}`);
+    return !Number.isNaN(eventDate.getTime()) && eventDate >= todayStart;
+  });
+
+  document.getElementById("reportCompletenessScore").textContent = employees.length ? `${completeness}%` : "0%";
+  document.getElementById("reportCompletenessInsight").textContent = employees.length ? `${completedRequiredFields} of ${totalRequiredFields} required fields completed` : "No employee records yet";
+  document.getElementById("reportRegistryIssues").textContent = employeeIssues.length;
+  document.getElementById("reportRegistryIssueInsight").textContent = employeeIssues.length ? `${employeeIssues.length} employee record${employeeIssues.length === 1 ? "" : "s"} need attention` : "No registry issues found";
+  document.getElementById("reportEventWindow").textContent = nearestEvent ? reportFormatDate(nearestEvent.date) : "None";
+  document.getElementById("reportEventWindowInsight").textContent = events.length ? `${scheduleGroups.upcoming} upcoming, ${scheduleGroups.today} today, ${scheduleGroups.past} past` : "No events scheduled";
+  document.getElementById("reportContentFreshness").textContent = newestContent ? reportFormatDate(newestContent) : "None";
+  document.getElementById("reportContentFreshnessInsight").textContent = newestContent ? `Latest portal update: ${reportFormatDateTime(newestContent)}` : "No communication activity";
+
+  reportRenderChart(
+    "reportAgeChart",
+    "reportAgeEmpty",
+    "reportAgeChartWrap",
+    "bar",
+    Object.keys(ageBands),
+    [{
+      label: "Employees",
+      data: Object.values(ageBands),
+      backgroundColor: "#075d63",
+      borderRadius: 8,
+      borderWidth: 0
+    }]
+  );
+
+  reportRenderChart(
+    "reportScheduleChart",
+    "reportScheduleEmpty",
+    "reportScheduleChartWrap",
+    "doughnut",
+    ["Past", "Today", "Upcoming", "Unscheduled"],
+    [{
+      label: "Events",
+      data: [scheduleGroups.past, scheduleGroups.today, scheduleGroups.upcoming, scheduleGroups.unscheduled],
+      backgroundColor: ["#8bb9bd", "#16a085", "#075d63", "#cbd5e1"],
+      borderWidth: 0
+    }],
+    { cutout: "66%" }
+  );
+
+  reportRenderChart(
+    "reportContentMixChart",
+    "reportContentMixEmpty",
+    "reportContentMixChartWrap",
+    "doughnut",
+    ["Announcements", "Events"],
+    [{
+      label: "Published Records",
+      data: [announcements.length, events.length],
+      backgroundColor: ["#075d63", "#0f75bc"],
+      borderWidth: 0
+    }],
+    { cutout: "58%" }
+  );
+
+  const auditTable = document.getElementById("reportAuditTable");
+  if (!employees.length) {
+    auditTable.innerHTML = `<tr><td colspan="3" class="px-4 py-6 text-center text-sm text-slate-500">No employee records yet.</td></tr>`;
+  } else if (!employeeIssues.length) {
+    auditTable.innerHTML = `<tr><td colspan="3" class="px-4 py-6 text-center text-sm text-slate-500">All registered employee records have the required fields.</td></tr>`;
+  } else {
+    auditTable.innerHTML = employeeIssues.map(({ employee, missing }) => {
+      return `
+        <tr>
+          <td class="px-4 py-3 font-medium text-slate-950">${employee.fullName || "Unnamed Employee"}</td>
+          <td class="px-4 py-3">${employee.position || "Unassigned"}</td>
+          <td class="px-4 py-3"><span class="rounded-md bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">${missing.join(", ")}</span></td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  const eventList = document.getElementById("reportEventHorizonList");
+  if (!sortedEvents.length) {
+    reportRenderEmptyList(eventList, "No events have been scheduled yet.");
+  } else {
+    eventList.innerHTML = sortedEvents.slice(0, 5).map((eventItem) => `
+      <div class="rounded-xl border border-slate-100 bg-white px-4 py-3">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <p class="truncate text-sm font-medium text-slate-950">${eventItem.title || "Untitled Event"}</p>
+            <p class="mt-1 text-xs text-slate-500">${reportFormatDate(eventItem.date)}${eventItem.time ? ` at ${eventItem.time}` : ""}</p>
+          </div>
+          <span class="rounded-md bg-[#e8f2f2] px-2.5 py-1 text-xs font-medium text-[#075d63]">${new Date(`${eventItem.date || ""}T${eventItem.time || "00:00"}`) < todayStart ? "Past" : "Scheduled"}</span>
+        </div>
+        <p class="mt-2 text-sm text-slate-600">${eventItem.location || "No location set"}</p>
+      </div>
+    `).join("");
+  }
+}
+
+renderReports();
+const logoutModal = document.getElementById("logoutModal"); const cancelLogout = document.getElementById("cancelLogout"); const confirmLogout = document.getElementById("confirmLogout"); document.querySelectorAll("[data-logout-open]").forEach((button) => button.addEventListener("click", () => { logoutModal.classList.remove("hidden"); logoutModal.classList.add("flex"); cancelLogout.focus(); })); cancelLogout.addEventListener("click", () => { logoutModal.classList.add("hidden"); logoutModal.classList.remove("flex"); }); confirmLogout.addEventListener("click", () => { window.location.href = "index.html"; }); logoutModal.addEventListener("click", (event) => { if (event.target === logoutModal) { logoutModal.classList.add("hidden"); logoutModal.classList.remove("flex"); } });</script>
+</body>
+</html>

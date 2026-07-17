@@ -1,0 +1,153 @@
+* {
+  box-sizing: border-box;
+}
+
+main,
+section,
+article,
+aside,
+div {
+  min-width: 0;
+}
+
+img,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+table {
+  min-width: 640px;
+}
+
+.chart-panel {
+  min-height: clamp(220px, 34vh, 320px);
+}
+
+.admin-card,
+.employee-card {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1023px) {
+  .admin-shell,
+  .employee-shell {
+    display: block !important;
+    height: 100dvh;
+  }
+
+  .admin-shell > section,
+  .employee-shell > section {
+    height: 100dvh;
+    overflow-y: auto;
+    transition: padding-left 200ms ease;
+  }
+
+  .admin-sidebar,
+  .employee-sidebar {
+    position: fixed !important;
+    inset: 0 auto 0 0;
+    z-index: 45;
+    width: min(84vw, 320px);
+    height: 100dvh;
+    display: flex !important;
+    flex-direction: column;
+    border-right: 1px solid #e2e8f0 !important;
+    border-bottom: 0 !important;
+    box-shadow: 18px 0 40px rgba(15, 23, 42, 0.12);
+    transform: translateX(0);
+    transition: transform 220ms ease;
+  }
+
+  body.sidebar-collapsed .admin-sidebar,
+  body.sidebar-collapsed .employee-sidebar {
+    transform: translateX(calc(-100% + 76px));
+    box-shadow: 10px 0 26px rgba(15, 23, 42, 0.08);
+  }
+
+  body.sidebar-collapsed .admin-shell > section,
+  body.sidebar-collapsed .employee-shell > section {
+    padding-left: 5.5rem;
+  }
+
+  .admin-sidebar nav,
+  .employee-sidebar nav {
+    flex-direction: column;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    scrollbar-width: thin;
+  }
+
+  .admin-sidebar .mt-auto.hidden,
+  .employee-sidebar .mt-auto.hidden {
+    display: block !important;
+  }
+
+  body.sidebar-collapsed .admin-sidebar .mt-auto.hidden,
+  body.sidebar-collapsed .employee-sidebar .mt-auto.hidden {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
+
+  .admin-sidebar,
+  .employee-sidebar {
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
+  }
+
+  body.sidebar-collapsed .admin-sidebar,
+  body.sidebar-collapsed .employee-sidebar {
+    transform: translateX(calc(-100% + 68px));
+  }
+
+  body.sidebar-collapsed .admin-shell > section,
+  body.sidebar-collapsed .employee-shell > section {
+    padding-left: 4.85rem;
+  }
+
+  .brand-logo {
+    min-width: 4.25rem !important;
+    height: 3.25rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .brand-logo img {
+    height: 2rem !important;
+  }
+
+  .nav-link {
+    font-size: 0.84rem;
+    padding: 0.62rem 0.68rem;
+  }
+
+  .admin-card,
+  .employee-card {
+    border-radius: 12px;
+  }
+
+  h1 {
+    font-size: 1.45rem !important;
+    line-height: 1.18 !important;
+  }
+
+  h2 {
+    line-height: 1.25 !important;
+  }
+
+  .chart-panel {
+    min-height: 230px;
+  }
+
+  .fixed.inset-0 > .admin-card,
+  .fixed.inset-0 > .employee-card,
+  .fixed.inset-0 > div {
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+  }
+}

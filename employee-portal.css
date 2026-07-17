@@ -1,0 +1,165 @@
+body {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f7f9fa;
+  color: #161f27;
+}
+
+.sidebar-surface {
+  background: #ffffff;
+}
+
+.nav-link {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.7rem;
+  border-radius: 10px;
+  padding: 0.72rem 0.75rem;
+  color: #2f3a42;
+  font-size: 0.92rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.nav-link:hover {
+  background: #f2f6f7;
+  color: #0c5960;
+}
+
+.nav-link-active {
+  background: #e8f2f2;
+  color: #075d63;
+  font-weight: 500;
+}
+
+.nav-link-active::before {
+  content: "";
+  position: absolute;
+  left: 0.45rem;
+  top: 0.62rem;
+  bottom: 0.62rem;
+  width: 3px;
+  border-radius: 999px;
+  background: #075d63;
+}
+
+.nav-link i,
+.nav-link svg {
+  height: 1.05rem;
+  width: 1.05rem;
+  color: currentColor;
+  stroke-width: 1.65;
+}
+
+.employee-card {
+  border: 1px solid #e7ecef;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.formal-button {
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.employee-shell {
+  transition: grid-template-columns 200ms ease;
+}
+
+.sidebar-toggle {
+  border: 1px solid #dfe7ea;
+  background: #ffffff;
+}
+
+.sidebar-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brand-logo {
+  transition: width 200ms ease, min-width 200ms ease, padding 200ms ease;
+}
+
+.employee-sidebar {
+  position: relative;
+  overflow: visible;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 1.65rem;
+  right: -1.15rem;
+  z-index: 40;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+}
+
+.post-content {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (min-width: 1024px) {
+  .employee-shell {
+    grid-template-columns: 300px minmax(0, 1fr);
+  }
+
+  body.sidebar-collapsed .employee-shell {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  body.sidebar-collapsed .brand-copy,
+  body.sidebar-collapsed .sidebar-label,
+  body.sidebar-collapsed .sidebar-module-heading,
+  body.sidebar-collapsed .account-copy {
+    display: none;
+  }
+
+  body.sidebar-collapsed .brand-logo {
+    width: 3.25rem;
+    min-width: 3.25rem;
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
+  }
+
+  body.sidebar-collapsed .brand-logo img {
+    height: 1.75rem;
+  }
+
+  body.sidebar-collapsed .nav-link {
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  body.sidebar-collapsed .nav-link-active::before {
+    left: 0;
+  }
+
+  body.sidebar-collapsed .account-card {
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .sidebar-toggle {
+    position: static;
+    box-shadow: none;
+  }
+
+  body.sidebar-collapsed .sidebar-module-heading,
+  body.sidebar-collapsed .employee-sidebar nav,
+  body.sidebar-collapsed .account-card,
+  body.sidebar-collapsed [aria-label="Logout"] {
+    display: none;
+  }
+
+  body.sidebar-collapsed .employee-sidebar {
+    padding-bottom: 0.75rem;
+  }
+}
