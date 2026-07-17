@@ -173,17 +173,17 @@
       }
     }
 
-    .employee-mobile-list {
-      display: none;
+    #employeeCardList.employee-mobile-list {
+      display: none !important;
     }
 
     @media (max-width: 767px) {
       .employee-table-wrap {
-        display: none;
+        display: none !important;
       }
 
-      .employee-mobile-list {
-        display: grid;
+      #employeeCardList.employee-mobile-list {
+        display: grid !important;
       }
 
       .employee-record-card {
@@ -191,6 +191,7 @@
         border-radius: 14px;
         background: #ffffff;
         padding: 1rem;
+        box-shadow: none;
       }
 
       .employee-record-grid {
